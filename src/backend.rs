@@ -127,6 +127,8 @@ impl MySqlBackend {
         })
     }
 
+    // [PRIVACY LINTER]
+    // [ingress : storage]
     pub fn query_exec(&mut self, qname: &str, keys: Vec<Value>) -> Vec<Vec<Value>> {
         let q = self.queries.get(qname).unwrap();
         let res = self

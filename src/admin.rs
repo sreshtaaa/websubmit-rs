@@ -13,6 +13,21 @@ use rocket_dyn_templates::Template;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
+/*
+[PRIVACY LINTER]
+
+[rule: delete (Type)]
+all a : Type {
+ a ingress storage
+ implies eventually a delete storage
+}
+
+[rule: access control (Type)]
+all u1 : User, o : Type {
+  u1.egress.o implies (u1.isAdmin or o.Owner == u1)
+}
+ */
+
 pub(crate) struct Admin;
 
 #[derive(Debug)]
@@ -50,6 +65,11 @@ pub(crate) struct AdminLecAdd {
     lec_label: String,
 }
 
+/* 
+[PRIVACY LINTER]
+[apply-rule: delete]
+[apply-rule: access control]
+*/ 
 #[derive(Debug, Serialize)]
 pub(crate) struct User {
     email: String,
@@ -113,6 +133,10 @@ pub(crate) fn lec(_adm: Admin, num: u8, backend: &State<Arc<Mutex<MySqlBackend>>
         questions: qs,
         parent: "layout",
     };
+    // TODO: repeating annotation? 
+
+    // [PRIVACY LINTER]
+    // [egress : user]
     Template::render("admin/lec", &ctx)
 }
 
